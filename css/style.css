@@ -1,0 +1,61 @@
+body {
+    text-align: center;
+}
+
+table {
+    margin: 0 auto;
+}
+
+.cell {
+    width: 40px;
+    height: 40px;
+    text-align: center;
+    font-size: 1.5em;
+    cursor: pointer;
+}
+
+.win-or-lose button {
+    width: 50px;
+    height: 50px;
+    font-size: 1.5em;
+}
+
+.hints{
+    cursor: pointer;
+    background-color: white;
+}
+
+.hidden {
+    position: relative;
+} 
+
+.hidden::after {
+    content: "";
+    display:block;
+    background-color: black;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.show {
+    background-color: white;
+}
+
+.marked {
+    position: relative;
+}
+
+.marked::after {
+    background-color: red;
+    content: "";
+    display:block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+

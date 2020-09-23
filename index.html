@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mine Sweeper</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body onload="init(1)">
+    <h1>Mine Sweeper!</h1>
+    <div class="data-board">
+        <h2 class="lives"></h2>
+        <h2 class="hints" onclick="hint()"></h2>
+    </div>
+    <div>
+        <button onclick="init(1)">Easy</button>
+        <button onclick="init(2)">normal</button>
+        <button onclick="init(3)">hard</button>
+    </div>
+    <div class="win-or-lose">
+        <button onclick="init(1)">😃</button>
+    </div>
+    <div class="board-container">
+
+    </div>
+    
+    <script src="js/util.js"></script>
+    <script src="js/game.js"></script>
+</body>
+</html>
