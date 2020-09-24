@@ -7,7 +7,9 @@ function creatBoard(size) {
                 minesAroundCount: null,
                 isShown: false,
                 isMine: false,
-                isMarked: false
+                isMarked: false,
+                wasShown: false,
+                wasMarked: false
             };
         }
     }
@@ -16,20 +18,26 @@ function creatBoard(size) {
 }
 
 function renderBoard(board, selector) {
-    var strHTML = '<table border="5"><tbody>'
+    var strHTML = '<table ><tbody>'
     for (var i = 0; i < board.length; i++) {
         strHTML += '<tr>'
         for (var j = 0; j < board[0].length; j++) {
             var currCell = board[i][j];
-            if(currCell.minesAroundCount === 0){
+            if (currCell.minesAroundCount === 0) {
                 currCell.minesAroundCount = ''
             }
-            var className = `hidden cell cell-${i}-${j}`
+            var showOrHide = '';
+            if (currCell.isShown) {
+                showOrHide = 'show'
+            } else {
+                showOrHide = 'hidden'
+            }
+            var className = ` ${showOrHide} cell cell-${i}-${j}`
             strHTML += `<td 
             oncontextmenu = "markCell(this, ${i}, ${j})"
             onclick = "cellClicked(this ,${i}, ${j})" 
             class = "${className}">
-            ${currCell.minesAroundCount}
+            <span>${currCell.minesAroundCount}<span>
             </td>`
         }
         strHTML += '</tr>'
@@ -63,7 +71,56 @@ function countNegs(board, rowIdx, colIdx) {
 }
 
 function showNegs(rowIdx, colIdx) {
-    // var elLives = document.querySelector('.lives')
+    for (var i = rowIdx - 1; i <= rowIdx + 1; i++) {
+        if (i < 0 || i > gBoard.length - 1) continue;
+        for (var j = colIdx - 1; j <= colIdx + 1; j++) {
+            if (j < 0 || j > gBoard.length - 1) continue;
+            var cell = gBoard[i][j];
+            if (cell.isShown) continue
+            var elCell = document.querySelector(`.cell-${i}-${j}`)
+            if (cell.isMarked) {
+                cell.isShown = true;
+                cell.isMarked = false
+                elCell.classList.add('show');
+                elCell.classList.remove('marked')
+            } else {
+                cell.isShown = true;
+                elCell.classList.add('show');
+                elCell.classList.remove('hidden')
+
+            }
+            console.log(gGame.shownCount);
+        }
+    }
+}
+
+function HideNegs(rowIdx, colIdx) {
+    for (var i = rowIdx - 1; i <= rowIdx + 1; i++) {
+        if (i < 0 || i > gBoard.length - 1) continue;
+        for (var j = colIdx - 1; j <= colIdx + 1; j++) {
+            if (j < 0 || j > gBoard.length - 1) continue;
+            var cell = gBoard[i][j];
+            var elCell = document.querySelector(`.cell-${i}-${j}`)
+            if (cell.wasShown) {
+                cell.isShown = true;
+                elCell.classList.remove('hidden');
+                elCell.classList.add('show')
+            }else if(cell.wasMarked){
+                cell.isMarked = true;
+                cell.isShown = false
+                elCell.classList.remove('show');
+                elCell.classList.add('marked')
+            }else{
+                cell.isShown = false;
+                elCell.classList.remove('show');
+                elCell.classList.add('hidden')
+                console.log(gGame.shownCount);
+            }
+        }
+    }
+}
+
+function fullExpansion(rowIdx, colIdx) {
     for (var i = rowIdx - 1; i <= rowIdx + 1; i++) {
         if (i < 0 || i > gBoard.length - 1) continue;
         for (var j = colIdx - 1; j <= colIdx + 1; j++) {
@@ -75,34 +132,17 @@ function showNegs(rowIdx, colIdx) {
             elCell.classList.add('show');
             elCell.classList.remove('hidden')
             gGame.shownCount++
-
+            if (cell.minesAroundCount === '') fullExpansion(i, j)
         }
     }
 }
 
-function HideNegs(rowIdx, colIdx){
-    for (var i = rowIdx - 1; i <= rowIdx + 1; i++) {
-        if (i < 0 || i > gBoard.length - 1) continue;
-        for (var j = colIdx - 1; j <= colIdx + 1; j++) {
-            if (j < 0 || j > gBoard.length - 1) continue;
-            var cell = gBoard[i][j];
-            if (cell.isShown) continue
-            var elCell = document.querySelector(`.cell-${i}-${j}`)
-            cell.isShown = false;
-            elCell.classList.remove('show');
-            elCell.classList.add('hidden')
-            gGame.shownCount--
-
-        }
-    }
-}
-
-function showCell(elCell, cell) {
-    cell.isShown = true
-    elCell.classList.add('show')
-    elCell.classList.remove('hidden')
-    gGame.shownCount++
-}
+// function showCell(elCell, cell) {
+//     cell.isShown = true
+//     elCell.classList.add('show')
+//     elCell.classList.remove('hidden')
+//     gGame.shownCount++
+// }
 
 function putRandomMines(board, num) {
     for (var i = 0; i < num; i++) {
@@ -146,29 +186,62 @@ function preventMenu() {
     })
 }
 
-function gameLevel(num) {
-    if (num === 1) {
-        gLevel = {
-            SIZE: 4,
-            MINES: 2
-        };
-    }
-    if (num === 2) {
-        gLevel = {
-            SIZE: 8,
-            MINES: 12
-        };
-    }
-    if (num === 3) {
-        gLevel = {
-            SIZE: 12,
-            MINES: 30
-        };
+function loseALife() {
+    var elLives = document.querySelector('.lives')
+    gLives.pop();
+    elLives.innerText = `Lives: ${gLives.toString()}`
+}
+
+function loseAHint() {
+    var elHints = document.querySelector('.hints')
+    gHints.pop();
+    if (gHints.length < 1) {
+        elHints.innerText = `You are out of 💡`
+    } else {
+        elHints.innerText = `Hints: ${gHints.toString()}`
     }
 }
 
-function loseALife() {
-    var elLives = document.querySelector('.lives')
-    gLives.pop()
-    elLives.innerText = `Lives: ${gLives.toString()}`
+function allMinesPos() {
+    var mines = []
+    for (var i = 0; i < gBoard.length; i++) {
+        for (var j = 0; j < gBoard.length; j++) {
+            currCell = gBoard[i][j];
+            if (currCell.isMine) {
+                mines.push({
+                    i: i,
+                    j: j
+                })
+            }
+        }
+    }
+    return mines;
+}
+
+function allClearPos() {
+    var clears = []
+    for (var i = 0; i < gBoard.length; i++) {
+        for (var j = 0; j < gBoard.length; j++) {
+            currCell = gBoard[i][j];
+            if (currCell.isShown) continue
+            if (!currCell.isMine) {
+                clears.push({
+                    i: i,
+                    j: j
+                })
+            }
+        }
+    }
+    return clears;
+}
+
+function hideCells() {
+    for (var i = 0; i < gBoard.length; i++) {
+        for (var j = 0; j < gBoard.length; j++) {
+            if (!gBoard[i][j].isShown)
+                var elCell = document.querySelector(`.cell-${i}-${j}`)
+            console.log(elCell);
+            elCell.classList.add('hidden')
+        }
+    }
 }

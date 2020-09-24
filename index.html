@@ -5,24 +5,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mine Sweeper</title>
     <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
 </head>
 <body onload="init(1)">
-    <h1>Mine Sweeper!</h1>
+    <h1 class="title">Mine Sweeper!</h1>
     <div class="data-board">
         <h2 class="lives"></h2>
-        <h2 class="hints" onclick="hint()"></h2>
+        <h2 class="hints" onclick="activateHint()"></h2>
+        <h2 class="marks-count"></h2>
+        <h2 class="number-of-mines"></h2>
     </div>
     <div>
-        <button onclick="init(1)">Easy</button>
-        <button onclick="init(2)">normal</button>
-        <button onclick="init(3)">hard</button>
+        <button class="difficult-btn transparent" onclick="init(1)">Easy</button>
+        <button class="difficult-btn transparent"  onclick="init(2)">Normal</button>
+        <button class="difficult-btn transparent"  onclick="init(3)">Hard</button>
     </div>
     <div class="win-or-lose">
-        <button onclick="init(1)">😃</button>
+        <button class="restart-btn" onclick="init(1)">😃</button>
     </div>
     <div class="board-container">
 
     </div>
+    <button class="safe-click-btn " onclick="safeToClick()">Safe-Click</button>
     
     <script src="js/util.js"></script>
     <script src="js/game.js"></script>

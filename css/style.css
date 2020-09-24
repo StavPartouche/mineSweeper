@@ -1,61 +1,183 @@
+* {
+  box-sizing: border-box;
+}
+
+html,
 body {
-    text-align: center;
+  width: 100%;
+  min-height: 100%;
+  font-family: "Roboto", sans-serif;
+  scroll-behavior: smooth;
+}
+
+body {
+  text-align: center;
+  background: rgb(34, 193, 195);
+  background: linear-gradient(
+    0deg,
+    rgba(34, 193, 195, 1) 0%,
+    rgba(11, 5, 19, 0.9192051820728291) 100%
+  );
+  background-repeat: no-repeat;
+   background-size: contain;
+}
+
+.title {
+  font-size: 80px;
+  -webkit-text-stroke-width: 1px;
+  -webkit-text-stroke-color: white;
+  color: transparent;
 }
 
 table {
-    margin: 0 auto;
+  margin: 0 auto;
+  border-radius: 5px;
+  transition: all 0.2s ease-in-out;
+}
+
+table.table-hint {
+  box-shadow: 0px 0px 30px 20px darkgoldenrod;
+}
+
+.data-board {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  margin: 20px 0;
+}
+
+.data-board > * {
+  width: 40%;
+  margin: 10px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 5px;
+  box-shadow: 0px 0px 5px 5px rgba(0, 0, 0, 0.052);
+  transition: all 0.2s ease-in-out;
+  color: aliceblue;
+}
+
+.data-board .hints {
+  cursor: pointer;
+}
+
+.data-board .hints:hover {
+  box-shadow: 0px 0px 5px 5px rgba(0, 0, 0, 0.252);
 }
 
 .cell {
-    width: 40px;
-    height: 40px;
-    text-align: center;
-    font-size: 1.5em;
-    cursor: pointer;
+  width: 40px;
+  height: 40px;
+  text-align: center;
+  font-size: 1.5em;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  border-radius: 5px;
 }
 
 .win-or-lose button {
-    width: 50px;
-    height: 50px;
-    font-size: 1.5em;
+  width: 50px;
+  height: 50px;
+  font-size: 1.5em;
 }
 
-.hints{
-    cursor: pointer;
-    background-color: white;
+.difficult-btn {
+  box-shadow: 0px 0px 5px 5px rgba(0, 0, 0, 0.052);
+  margin: 15px;
+  width: 100px;
+  height: 60px;
+  font-weight: bold;
+  font-size: medium;
+  border-radius: 5px;
+  cursor: pointer;
 }
 
-.hidden {
-    position: relative;
-} 
+.difficult-btn:hover {
+  box-shadow: 0px 0px 5px 5px rgba(0, 0, 0, 0.4);
+}
 
-.hidden::after {
-    content: "";
-    display:block;
-    background-color: black;
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+.safe-click-btn {
+  margin: 20px;
+  height: 100px;
+  width: 100px;
+  border-radius: 50%;
+  font-weight: bold;
+  font-size: medium;
+  box-shadow: 0px 0px 5px 5px rgba(0, 0, 0, 0.2);
+  background-color: rgba(11, 5, 19, 0.919205182072829);
+  color: aliceblue;
+  cursor: pointer;
+}
+
+.safe-click-btn:hover {
+  box-shadow: 0px 0px 5px 5px rgba(0, 0, 0, 0.4);
+}
+
+.restart-btn {
+  box-shadow: 0px 0px 5px 5px rgba(0, 0, 0, 0.052);
+  border-radius: 5px;
+}
+
+.restart-btn:hover {
+  box-shadow: 0px 0px 5px 5px rgba(0, 0, 0, 0.4);
+}
+
+.hints {
+  cursor: pointer;
 }
 
 .show {
-    background-color: white;
+  background-color: rgb(255, 255, 255);
+  border: 1px solid black;
+}
+
+.show span {
+  display: block;
+}
+
+.hidden {
+  background-color: rgb(0, 0, 0);
+}
+
+.hidden span {
+  display: none;
 }
 
 .marked {
-    position: relative;
+  position: relative;
+  background-color: black;
 }
 
 .marked::after {
-    background-color: red;
-    content: "";
-    display:block;
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+  content: "🏁";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
 }
 
+.marked span {
+  display: none;
+}
+
+.safe {
+  background-color: rgb(225, 8, 245);
+  color: rgb(225, 8, 245);
+}
+
+.transparent {
+  background: transparent;
+  outline: none;
+  border: none;
+  color: aliceblue;
+}
+
+.btn-off{
+    background-color: gray;
+    cursor: default
+}
