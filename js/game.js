@@ -97,6 +97,7 @@ function cellClicked(elCell, i, j) {
             var elLives = document.querySelector('.lives')
             if (gLives.length > 1) {
                 loseALife()
+                
                 return
             } else {
                 elLives.innerText = ' You are out of ❤️'
@@ -153,6 +154,8 @@ function youLost() {
     renderBoard(gBoard, '.board-container')
     elBtn.innerText = '😭'
     gGame.isOn = false
+    var elTable = document.querySelector('table')
+    elTable.classList.toggle('end-game')
 }
 
 function youWon() {

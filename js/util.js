@@ -18,7 +18,7 @@ function creatBoard(size) {
 }
 
 function renderBoard(board, selector) {
-    var strHTML = '<table ><tbody>'
+    var strHTML = '<table><tbody>'
     for (var i = 0; i < board.length; i++) {
         strHTML += '<tr>'
         for (var j = 0; j < board[0].length; j++) {
@@ -105,12 +105,12 @@ function HideNegs(rowIdx, colIdx) {
                 cell.isShown = true;
                 elCell.classList.remove('hidden');
                 elCell.classList.add('show')
-            }else if(cell.wasMarked){
+            } else if (cell.wasMarked) {
                 cell.isMarked = true;
                 cell.isShown = false
                 elCell.classList.remove('show');
                 elCell.classList.add('marked')
-            }else{
+            } else {
                 cell.isShown = false;
                 elCell.classList.remove('show');
                 elCell.classList.add('hidden')
@@ -190,6 +190,10 @@ function loseALife() {
     var elLives = document.querySelector('.lives')
     gLives.pop();
     elLives.innerText = `Lives: ${gLives.toString()}`
+    document.querySelector('table').classList.add('shake')
+    setTimeout(function () {
+        document.querySelector('table').classList.remove('shake')
+    }, 500);
 }
 
 function loseAHint() {
