@@ -8,13 +8,15 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
 </head>
 <body onload="init(1)">
-    <h1 class="title">Mine Sweeper!</h1>
+    <h1 class="title">Mine Sweeper</h1>
     <div class="data-board">
         <h2 class="lives"></h2>
-        <h2 class="hints" onclick="activateHint()"></h2>
+        <h2 class="hints" onclick="toggleHint()"></h2>
         <h2 class="marks-count"></h2>
         <h2 class="number-of-mines"></h2>
     </div>
+    <h2 class="sound-btn" onclick="toggleSound()">🔊</h2>
+    <h2 class="timer">Time:</h2>
     <div>
         <button class="difficult-btn transparent" onclick="init(1)">Easy</button>
         <button class="difficult-btn transparent"  onclick="init(2)">Normal</button>
@@ -26,7 +28,21 @@
     <div class="board-container">
 
     </div>
-    <button class="safe-click-btn " onclick="safeToClick()">Safe-Click</button>
+    <button class="safe-click-btn " onclick="safeToClick()">Safe-Click (3)</button>
+
+    <h2>Best Scores</h2>
+    <div class ="score-board">
+        <div class="easy-scores column">
+            <h2>Easy</h2>
+        </div>
+        <div class="normal-scores column">
+            <h2>Normal</h2>
+        </div>
+        <div class="hard-scores column">
+            <h2>Hard</h2>
+        </div>
+    </div>
+
     
     <script src="js/util.js"></script>
     <script src="js/game.js"></script>

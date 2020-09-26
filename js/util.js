@@ -1,3 +1,27 @@
+function gameLevel(num) {
+    if (num === 1) {
+        gLevel = {
+            DIFFICULTY: num,
+            SIZE: 4,
+            MINES: 2
+        };
+    }
+    if (num === 2) {
+        gLevel = {
+            DIFFICULTY: num,
+            SIZE: 8,
+            MINES: 12
+        };
+    }
+    if (num === 3) {
+        gLevel = {
+            DIFFICULTY: num,
+            SIZE: 12,
+            MINES: 30
+        };
+    }
+}
+
 function creatBoard(size) {
     var board = []
     for (var i = 0; i < size; i++) {
@@ -47,14 +71,6 @@ function renderBoard(board, selector) {
     elContainer.innerHTML = strHTML
 }
 
-function setMinesNegsCount(board) {
-    for (var i = 0; i < board.length; i++) {
-        for (var j = 0; j < board.length; j++) {
-            if (board[i][j].isMine) continue
-            board[i][j].minesAroundCount = countNegs(board, i, j)
-        }
-    }
-}
 
 function countNegs(board, rowIdx, colIdx) {
     var count = 0;
@@ -68,6 +84,15 @@ function countNegs(board, rowIdx, colIdx) {
         }
     }
     return count
+}
+
+function setMinesNegsCount(board) {
+    for (var i = 0; i < board.length; i++) {
+        for (var j = 0; j < board.length; j++) {
+            if (board[i][j].isMine) continue
+            board[i][j].minesAroundCount = countNegs(board, i, j)
+        }
+    }
 }
 
 function showNegs(rowIdx, colIdx) {
@@ -89,7 +114,6 @@ function showNegs(rowIdx, colIdx) {
                 elCell.classList.remove('hidden')
 
             }
-            console.log(gGame.shownCount);
         }
     }
 }
@@ -114,7 +138,6 @@ function HideNegs(rowIdx, colIdx) {
                 cell.isShown = false;
                 elCell.classList.remove('show');
                 elCell.classList.add('hidden')
-                console.log(gGame.shownCount);
             }
         }
     }
@@ -136,13 +159,6 @@ function fullExpansion(rowIdx, colIdx) {
         }
     }
 }
-
-// function showCell(elCell, cell) {
-//     cell.isShown = true
-//     elCell.classList.add('show')
-//     elCell.classList.remove('hidden')
-//     gGame.shownCount++
-// }
 
 function putRandomMines(board, num) {
     for (var i = 0; i < num; i++) {
@@ -176,33 +192,13 @@ function putRandomMine(board) {
     }
 }
 
-function getRandomIntInclusive(min, max) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-}
-
-function preventMenu() {
-    document.addEventListener("contextmenu", function (a) {
-        a.preventDefault();
-    })
-}
-
-function loseALife() {
-    var elLives = document.querySelector('.lives')
-    gLives.pop();
-    elLives.innerText = `Lives: ${gLives.toString()}`
-    document.querySelector('table').classList.add('shake')
-    setTimeout(function () {
-        document.querySelector('table').classList.remove('shake')
-    }, 500);
-}
-
 function loseAHint() {
     var elHints = document.querySelector('.hints')
     gHints.pop();
     if (gHints.length < 1) {
         elHints.innerText = `You are out of 💡`
     } else {
-        elHints.innerText = `Hints: ${gHints.toString()}`
+        elHints.innerText = `Click for a hint: ${gHints.toString()}`
     }
 }
 
@@ -244,8 +240,117 @@ function hideCells() {
         for (var j = 0; j < gBoard.length; j++) {
             if (!gBoard[i][j].isShown)
                 var elCell = document.querySelector(`.cell-${i}-${j}`)
-            console.log(elCell);
             elCell.classList.add('hidden')
         }
     }
 }
+
+
+function startTimer() {
+    gTimerStarter = setInterval(function () {
+        gSeconds++
+        var elTimer = document.querySelector('.timer');
+        elTimer.innerText = `Time: ${gSeconds / 100} `
+    }, 10)
+}
+
+function renderScores() {
+    var currScores = gScores[gLevel.DIFFICULTY - 1].bestScores
+
+    if (gLevel.DIFFICULTY === 1) elScores = document.querySelector('.easy-scores')
+    if (gLevel.DIFFICULTY === 2) elScores = document.querySelector('.normal-scores')
+    if (gLevel.DIFFICULTY === 3) elScores = document.querySelector('.hard-scores')
+
+    currScores.push(gSeconds / 100)
+    currScores.sort(sortNumbers)
+
+    var strHTML = `<h2 class="">${gScores[gLevel.DIFFICULTY - 1].difficult}</h2>`
+
+    for (var i = 0; i < currScores.length; i++) {
+        strHTML += `<h4>${currScores[i]}</h4>`
+    }
+    elScores.innerHTML = strHTML;
+}
+
+function loseALife() {
+    var elLives = document.querySelector('.lives')
+    gLives.pop();
+    elLives.innerText = `Lives: ${gLives.toString()}`
+    document.querySelector('table').classList.add('shake')
+    setTimeout(function () {
+        var elTable = document.querySelector('table')
+        elTable.classList.remove('shake')
+    }, 500);
+    if (gSound) gHitAMineSound.play();
+}
+
+function youLost() {
+    clearInterval(gTimerStarter)
+    var elBtn = document.querySelector('.win-or-lose button');
+    var mines = allMinesPos();
+    for (var i = 0; i < mines.length; i++) {
+        gBoard[mines[i].i][mines[i].j].minesAroundCount = '💥'
+        gBoard[mines[i].i][mines[i].j].isShown = true
+    }
+    renderBoard(gBoard, '.board-container')
+    elBtn.innerText = '😭'
+    gGame.isOn = false
+    var elTable = document.querySelector('table')
+    elTable.classList.toggle('end-game')
+    if (gSound) gLostSound.play();
+}
+
+function checkIfWon() {
+    if ((gGame.shownCount === (gLevel.SIZE ** 2) - gLevel.MINES) &&
+        (gGame.markedCount === gLevel.MINES)) return true;
+
+}
+
+function youWon() {
+    clearInterval(gTimerStarter)
+    var elBtn = document.querySelector('.win-or-lose button');
+    elBtn.innerText = '😎'
+    gGame.isOn = false;
+    if (gSound) gWinSound.play();
+    renderScores();
+}
+
+function toggleHint() {
+    var elTable = document.querySelector('table');
+
+    if (gHints.length < 1) return
+    elTable.classList.toggle('table-hint')
+    if (!gHint) {
+        gHint = true
+        if (gSound) gHintOnSound.play()
+    } else {
+        gHint = false
+        if (gSound) gHintOffSound.play()
+    }
+}
+
+function toggleSound() {
+    elSoundBtn = document.querySelector('.sound-btn')
+    if (gSound) {
+        gSound = false;
+        elSoundBtn.innerText = '🔈'
+    } else {
+        gSound = true;
+        elSoundBtn.innerText = '🔊'
+    }
+}
+
+function getRandomIntInclusive(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function preventMenu() {
+    document.addEventListener("contextmenu", function (a) {
+        a.preventDefault();
+    })
+}
+
+function sortNumbers(a, b) {
+    return a - b;
+}
+

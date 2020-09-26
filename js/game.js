@@ -16,6 +16,19 @@ var gHints;
 var gHint = false
 var gSafeClickOn = false;
 var gSafeClicks;
+var gSound = true;
+var gSeconds;
+var gTimerStarter;
+var gScores;
+gScores = [{ difficult: 'Easy', bestScores: [] },
+{ difficult: 'Normal', bestScores: [] },
+{ difficult: 'Hard', bestScores: [] }]
+
+var gHitAMineSound = new Audio('../sounds/hitABombSound.mp3')
+var gLostSound = new Audio('../sounds/lostTheGameSound.mp3')
+var gWinSound = new Audio('../sounds/winTheGameSound.mp3')
+var gHintOnSound = new Audio('../sounds/hintOnSound.mp3')
+var gHintOffSound = new Audio('../sounds/hintOffSound.mp3')
 
 
 function init(num) {
@@ -27,13 +40,17 @@ function init(num) {
     gSafeClicks = 3;
     gGame.shownCount = 0;
     gGame.markedCount = 0;
+    gSeconds = 0;
 
+    clearInterval(gTimerStarter)
+    var elTimer = document.querySelector('.timer');
+    elTimer.innerText = `Time: ${gSeconds / 100}`
 
     var elLives = document.querySelector('.lives');
     elLives.innerText = `Lives: ${gLives.toString()}`
 
     var elHints = document.querySelector('.hints')
-    elHints.innerText = `Hints: ${gHints.toString()}`
+    elHints.innerText = `Click for a hint: ${gHints.toString()}`
 
     var elBtn = document.querySelector('.win-or-lose button');
     elBtn.innerText = '😃'
@@ -42,6 +59,7 @@ function init(num) {
     elMarkCount.innerText = `Marks: ${gGame.markedCount.toString()}`
 
     var elSafeBtn = document.querySelector('.safe-click-btn')
+    elSafeBtn.innerText = `Safe-Click (3)`
     elSafeBtn.classList.remove('btn-off')
 
     gameLevel(num);
@@ -52,10 +70,7 @@ function init(num) {
     var elNumMines = document.querySelector('.number-of-mines');
     elNumMines.innerText = `Number of 💣: ${gLevel.MINES}`
     document.querySelector('table').scrollIntoView()
-
 }
-
-
 
 
 function cellClicked(elCell, i, j) {
@@ -74,30 +89,17 @@ function cellClicked(elCell, i, j) {
         return
     }
     if (cell.isShown) return
+    if (gFirstClick) {
+        startTimer()
+    }
     if (gFirstClick === true && cell.isMine === true) {
-        putRandomMine(gBoard)
-        gBoard[i][j].isMine = false;
-        gBoard[i][j].minesAroundCount = countNegs(gBoard, i, j)
-        renderBoard(gBoard, '.board-container')
-        console.log(gBoard[i][j].minesAroundCount);
-        if (gBoard[i][j].minesAroundCount === '') {
-            fullExpansion(i, j)
-        } else {
-            gBoard[i][j].isShown = true;
-            gBoard[i][j].wasShown = true;
-            elCell.classList.add('show')
-            elCell.classList.remove('hidden')
-            renderBoard(gBoard, '.board-container')
-        }
-
-        gFirstClick = false
+        firstClickOnMine(elCell, i, j);
     } else {
         if (cell.isMarked) return
         if (cell.isMine) {
             var elLives = document.querySelector('.lives')
             if (gLives.length > 1) {
                 loseALife()
-                
                 return
             } else {
                 elLives.innerText = ' You are out of ❤️'
@@ -111,7 +113,6 @@ function cellClicked(elCell, i, j) {
             elCell.classList.add('show')
             elCell.classList.remove('hidden')
             gGame.shownCount++
-            console.log(gGame.shownCount);
         } else {
             fullExpansion(i, j)
         }
@@ -144,56 +145,11 @@ function markCell(elCell, i, j) {
     if (checkIfWon()) youWon()
 }
 
-function youLost() {
-    var elBtn = document.querySelector('.win-or-lose button');
-    var mines = allMinesPos();
-    for (var i = 0; i < mines.length; i++) {
-        gBoard[mines[i].i][mines[i].j].minesAroundCount = '💥'
-        gBoard[mines[i].i][mines[i].j].isShown = true
-    }
-    renderBoard(gBoard, '.board-container')
-    elBtn.innerText = '😭'
-    gGame.isOn = false
-    var elTable = document.querySelector('table')
-    elTable.classList.toggle('end-game')
-}
-
-function youWon() {
-    var elBtn = document.querySelector('.win-or-lose button');
-    elBtn.innerText = '😎'
-    gGame.isOn = false
-}
-
-function checkIfWon() {
-    if ((gGame.shownCount === (gLevel.SIZE ** 2) - gLevel.MINES) &&
-        (gGame.markedCount === gLevel.MINES)) return true;
-
-}
-
-function activateHint() {
-    var elTable = document.querySelector('table');
-
-    if (gHints.length < 1) return
-    // if (!gHint) {
-    //     elHints.style.backgroundColor = 'yellow'
-    //     gHint = true;
-    // } else {
-    //     elHints.style.backgroundColor = 'white'
-    //     gHint = false;
-    // }
-
-    elTable.classList.toggle('table-hint')
-    if (!gHint) {
-        gHint = true
-    } else {
-        gHint = false
-    }
-}
-
 function safeToClick() {
     if (gSafeClicks === 0) {
         return;
     }
+    var elSafeBtn = document.querySelector('.safe-click-btn')
     gSafeClickOn = true
     var clears = allClearPos();
     if (clears.length === 0) return
@@ -215,38 +171,31 @@ function safeToClick() {
         elClearCell.classList.add('hidden')
         gSafeClickOn = false
     }, 1500)
-    console.log(gSafeClicks);
     gSafeClicks--;
     if (gSafeClicks === 0) {
-        var elSafeBtn = document.querySelector('.safe-click-btn')
         elSafeBtn.classList.add('btn-off')
     }
+    elSafeBtn.innerText = `Safe-Click (${gSafeClicks})`
 }
 
-function gameLevel(num) {
-    if (num === 1) {
-        gLevel = {
-            SIZE: 4,
-            MINES: 2
-        };
+function firstClickOnMine(elCell, i, j) {
+    startTimer()
+    putRandomMine(gBoard)
+    gBoard[i][j].isMine = false;
+    gBoard[i][j].minesAroundCount = countNegs(gBoard, i, j)
+    renderBoard(gBoard, '.board-container')
+    if (gBoard[i][j].minesAroundCount === '') {
+        fullExpansion(i, j)
+    } else {
+        gBoard[i][j].isShown = true;
+        gBoard[i][j].wasShown = true;
+        elCell.classList.add('show')
+        elCell.classList.remove('hidden')
+        renderBoard(gBoard, '.board-container')
     }
-    if (num === 2) {
-        gLevel = {
-            SIZE: 8,
-            MINES: 12
-        };
-    }
-    if (num === 3) {
-        gLevel = {
-            SIZE: 12,
-            MINES: 30
-        };
-    }
+
+    gFirstClick = false
 }
-
-
-
-
 
 
 
