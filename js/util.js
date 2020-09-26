@@ -198,7 +198,7 @@ function loseAHint() {
     if (gHints.length < 1) {
         elHints.innerText = `You are out of 💡`
     } else {
-        elHints.innerText = `Click for a hint: ${gHints.toString()}`
+        elHints.innerText = `Click for a hint: ${gHints.join('')}`
     }
 }
 
@@ -275,7 +275,7 @@ function renderScores() {
 function loseALife() {
     var elLives = document.querySelector('.lives')
     gLives.pop();
-    elLives.innerText = `Lives: ${gLives.toString()}`
+    elLives.innerText = `Lives: ${gLives.join('')}`
     document.querySelector('table').classList.add('shake')
     setTimeout(function () {
         var elTable = document.querySelector('table')

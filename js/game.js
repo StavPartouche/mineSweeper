@@ -47,10 +47,10 @@ function init(num) {
     elTimer.innerText = `Time: ${gSeconds / 100}`
 
     var elLives = document.querySelector('.lives');
-    elLives.innerText = `Lives: ${gLives.toString()}`
+    elLives.innerText = `Lives: ${gLives.join('')}`
 
     var elHints = document.querySelector('.hints')
-    elHints.innerText = `Click for a hint: ${gHints.toString()}`
+    elHints.innerText = `Click for a hint: ${gHints.join('')}`
 
     var elBtn = document.querySelector('.win-or-lose button');
     elBtn.innerText = '😃'
