@@ -24,11 +24,11 @@ gScores = [{ difficult: 'Easy', bestScores: [] },
 { difficult: 'Normal', bestScores: [] },
 { difficult: 'Hard', bestScores: [] }]
 
-var gHitAMineSound = new Audio('../sounds/hitABombSound.mp3')
-var gLostSound = new Audio('../sounds/lostTheGameSound.mp3')
-var gWinSound = new Audio('../sounds/winTheGameSound.mp3')
-var gHintOnSound = new Audio('../sounds/hintOnSound.mp3')
-var gHintOffSound = new Audio('../sounds/hintOffSound.mp3')
+var gHitAMineSound = new Audio(`${location.href.includes('local host') ? '..' : ''}sounds/hitABombSound.mp3`)
+var gLostSound = new Audio(`${location.href.includes('local host') ? '..' : ''}sounds/lostTheGameSound.mp3`)
+var gWinSound = new Audio(`${location.href.includes('local host') ? '..' : ''}sounds/winTheGameSound.mp3`)
+var gHintOnSound = new Audio(`${location.href.includes('local host') ? '..' : ''}sounds/hintOnSound.mp3`)
+var gHintOffSound = new Audio(`${location.href.includes('local host') ? '..' : ''}sounds/hintOffSound.mp3`)
 
 
 function init(num) {
