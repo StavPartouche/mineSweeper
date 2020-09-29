@@ -11,12 +11,13 @@
     <h1 class="title">Mine Sweeper</h1>
     <div class="data-board">
         <h2 class="lives"></h2>
-        <h2 class="hints" onclick="toggleHint()"></h2>
+        <h2 class="hints" onclick="toggleHint()" onmousemove="showInfoHints()" onmouseout="infoDefault()"></h2>
         <h2 class="marks-count"></h2>
         <h2 class="number-of-mines"></h2>
     </div>
+    
     <h2 class="sound-btn" onclick="toggleSound()">🔊</h2>
-    <h2 class="timer">Time:</h2>
+    <h2 class="timer">Time: </h2>
     <div>
         <button class="difficult-btn transparent" onclick="init(1)">Easy</button>
         <button class="difficult-btn transparent"  onclick="init(2)">Normal</button>
@@ -41,6 +42,9 @@
         <div class="hard-scores column">
             <h2>Hard</h2>
         </div>
+    </div>
+    <div>
+        <h2 class="hint-modal">💡 Click on a square to reveal his neighbors</h2>
     </div>
 
     

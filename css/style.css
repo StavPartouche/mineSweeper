@@ -227,6 +227,34 @@ table.table-hint {
   pointer-events: none;
 }
 
+.hint-modal {
+  display: none;
+}
+
+.show-hint-modal {
+  position: absolute;
+  top :45%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+  width: 400px;
+  height: 100px;
+  text-align: center;
+  padding: 20px;
+  box-sizing: border-box;
+  display: block;
+  border-radius: 15px;
+  box-shadow: 0px 0px 5px 5px rgba(0, 0, 0, 0.6);
+  color: black;
+  background-color: rgb(161, 159, 8);
+}
+
+.info {
+  width: 400px;
+  height: 100px;
+  box-shadow: 0px 0px 5px 5px rgba(0, 0, 0, 0.6);
+  margin: 0 auto;
+}
+
 @keyframes shake {
   0% {
     transform: skewX(-10deg);

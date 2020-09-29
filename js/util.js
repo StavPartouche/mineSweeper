@@ -297,6 +297,7 @@ function youLost() {
     gGame.isOn = false
     var elTable = document.querySelector('table')
     elTable.classList.toggle('end-game')
+    clearInterval(gTimerStarter)
     if (gSound) gLostSound.play();
 }
 
@@ -317,9 +318,10 @@ function youWon() {
 
 function toggleHint() {
     var elTable = document.querySelector('table');
-
+    var elModal = document.querySelector('.hint-modal');
     if (gHints.length < 1) return
     elTable.classList.toggle('table-hint')
+    elModal.classList.toggle('show-hint-modal')
     if (!gHint) {
         gHint = true
         if (gSound) gHintOnSound.play()
@@ -353,4 +355,5 @@ function preventMenu() {
 function sortNumbers(a, b) {
     return a - b;
 }
+
 
